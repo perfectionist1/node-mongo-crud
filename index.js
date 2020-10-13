@@ -39,7 +39,8 @@ client.connect(err => {
         productsCollection.insertOne(product)     
         .then( result => {
             console.log('data added successfully');
-            res.send('Success in sending data in DB');
+            //res.send('Success in sending data in DB');
+            res.redirect('/');
         })
         
     })    
@@ -61,7 +62,8 @@ client.connect(err => {
         //console.log(req.params.id);
         productsCollection.deleteOne({_id: ObjectId(req.params.id) })
         .then( result => {
-            console.log(result);
+            // console.log(result);
+            res.send( result.deletedCount > 0);
         })
     })
 
@@ -85,7 +87,8 @@ client.connect(err => {
             $set: { price: req.body.price, quantity: req.body.quantity}
         })
         .then( result => {
-            console.log(result);
+            //console.log(result);
+            res.send( result.modifiedCount > 0 );
         })
         
     })

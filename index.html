@@ -14,10 +14,8 @@
         <input type="submit" name="" value="Add Product">
     </form>
     <div id="products" style="width: 50%; margin: 50px auto; border: 1px solid lightgrey; padding: 20px; border-radius: 20px">
-
     </div>
-    <div id="update" style="width: 50%; margin: 50px auto; border: 1px solid lightgrey; padding: 20px; border-radius: 20px">
-    
+    <div id="update" style="width: 50%; margin: 50px auto; border: 1px solid lightgrey; padding: 20px; border-radius: 20px">    
     </div>     
    
     <script>
@@ -27,17 +25,17 @@
             .then( data => {
                 console.log(data);
                 const mainContainer = document.getElementById('products');
+                mainContainer.innerHTML = '';
                 data.forEach( pd => {
                     const newElement = document.createElement('h3');
                     newElement.innerHTML = `Laptop: ${pd.name}, Price: ${pd.price}, Quantity: ${pd.quantity}
                     <button onclick="showProduct('${pd._id}')"> Show Item </button>
-                    <button onclick="deleteProduct('${pd._id}')"> Delete </button>`;
+                    <button onclick="deleteProduct(event, '${pd._id}')"> Delete </button>`;
                     mainContainer.appendChild(newElement);
                 });
             })
         }
-        loadProducts();
-        
+        loadProducts();        
 
         function showProduct(id){
             fetch(`product/${id}`)
@@ -67,21 +65,28 @@
                 body: JSON.stringify(product),
             })     
             .then( res => res.json())       
-            .then( data => {
-                console.log('updated');
+            .then( result => {
+                //console.log('updated');
+                if(result){
+                    loadProducts();
+                    document.getElementById('update').innerHTML = '';
+                }
             })
         }
-
         // function deleteProduct(id){
         //     console.log("this product will be deleted", id);
         // }
-        function deleteProduct(id){
+        function deleteProduct(event, id){
+            //console.log(event.target.parentNode);
             fetch(`/delete/${id}`, {
                 method: 'DELETE'
             })
             .then(res => res.json())
             .then(result => {
-                console.log('Deleted success');
+               // console.log('Deleted success');               
+                if(result){
+                    event.target.parentNode.style.display = 'none';
+                }
             })
         }
     </script>
