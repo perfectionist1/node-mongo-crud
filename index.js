@@ -18,6 +18,15 @@ app.get('/', (req, res) => {
 
 client.connect(err => {
     const productsCollection = client.db("node-mongo-crud").collection("products");
+
+    app.get('/products', (req, res) => {
+        productsCollection.find({})
+        .toArray( (err, documents) => {
+            res.send(documents);
+        })
+
+    })
+
     //console.log('Yah, Database connected!');
     // const products = {        
     //     name: "HP Laptop",
