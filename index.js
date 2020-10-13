@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
+const ObjectId = require('mongodb').ObjectID;
 
 
 const uri = "mongodb+srv://organicUser:Bangladesh331551@cluster0.plevr.mongodb.net/node-mongo-crud?retryWrites=true&w=majority";
@@ -19,14 +20,9 @@ app.get('/', (req, res) => {
 client.connect(err => {
     const productsCollection = client.db("node-mongo-crud").collection("products");
 
-    app.get('/products', (req, res) => {
-        productsCollection.find({})
-        .toArray( (err, documents) => {
-            res.send(documents);
-        })
-
-    })
-
+    //********************* */
+        //CREATE PRODUCTS
+    //********************* */
     //console.log('Yah, Database connected!');
     // const products = {        
     //     name: "HP Laptop",
@@ -47,6 +43,53 @@ client.connect(err => {
         })
         
     })    
+    //********************* */
+        //READ PRODUCTS
+    //********************* */
+    app.get('/products', (req, res) => {
+        productsCollection.find({})
+        .toArray( (err, documents) => {
+            res.send(documents);
+        })
+
+    })
+
+    //**************************************************************** */
+        //DELETE PRODUCT
+    //**************************************************************** */
+    app.delete('/delete/:id', (req, res) => {
+        //console.log(req.params.id);
+        productsCollection.deleteOne({_id: ObjectId(req.params.id) })
+        .then( result => {
+            console.log(result);
+        })
+    })
+
+    //**************************************************************** */
+        //Show PRODUCT
+    //**************************************************************** */
+    app.get('/product/:id', (req, res) => {
+        productsCollection.find({_id: ObjectId(req.params.id)})
+        .toArray( (err, documents) => {
+            res.send(documents[0]);
+        })
+    })
+
+    //**************************************************************** */
+        //Update PRODUCT
+    //**************************************************************** */
+    app.patch('/update/:id', (req, res) => {
+        console.log(req.body.price);
+        productsCollection.updateOne({_id: ObjectId(req.params.id)},
+        {
+            $set: { price: req.body.price, quantity: req.body.quantity}
+        })
+        .then( result => {
+            console.log(result);
+        })
+        
+    })
+
 
 //   client.close();
 });
